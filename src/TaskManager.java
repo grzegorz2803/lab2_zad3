@@ -1,3 +1,4 @@
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -10,28 +11,27 @@ public class TaskManager {
         this.executorService = Executors.newFixedThreadPool(5);
         this.taskResults = new ArrayList<>();
     }
-    public void  submitTask(Task task){
+    public void submitTask(Task task) {
         Future<String> futureResult = executorService.submit(task);
         taskResults.add(futureResult);
     }
-    public void displayTasks() {
+
+    public void displayTasks() throws ExecutionException, InterruptedException {
         System.out.println("Lista zadań:");
         for (int i = 0; i < taskResults.size(); i++) {
             Future<String> future = taskResults.get(i);
-            Callable<String> task = (Callable<String>) future;
-            if (task instanceof Task) {
-                System.out.println(i + ": " + ((Task) task).getName());
-            } else {
-                System.out.println(i + ": Nieznane zadanie");
-            }
+            System.out.println(i + ": " + future);
         }
     }
+
+
+
     public  void  checkTaskStatus(int index){
         Future<String> future  = taskResults.get(index);
-        if(future.isDone()){
+        if(future.isCancelled()){
+            System.out.println("Zadanie "+index+" zostało anulowane.");
+        }else if (future.isDone()){
             System.out.println("Zadanie "+index+" jest zakończone.");
-        }else if (future.isCancelled()){
-            System.out.println("Zadanie "+index+" został anulowany.");
         }else {
             System.out.println("Zadanie "+index+" jest w trakcie wykonywania.");
         }

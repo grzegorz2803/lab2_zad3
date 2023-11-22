@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 public class Task implements Callable {
@@ -8,7 +9,7 @@ public class Task implements Callable {
     }
     @Override
     public String call() throws Exception {
-        Thread.sleep(3000);
+        Thread.sleep(10000);
         return  "Wynik zadania "+name;
     }
     public  String getName(){
